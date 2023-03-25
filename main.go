@@ -13,5 +13,4 @@ func main() {
     app.Get("/api/links", handlers.ListLinks)
 
     app.Listen(":3000")
-
 }
