@@ -10,7 +10,7 @@ COPY . /app
 # Build the Go app
 RUN go build -o snixr
 
-# Expose port 8080 for the application
+# Expose port 3000 for the application
 EXPOSE 3000
 
 # Define the command to run when the container starts
