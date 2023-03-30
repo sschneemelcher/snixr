@@ -30,7 +30,7 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
         }
         
         // Return new link as JSON response
-        return c.SendString(fmt.Sprintf("New short url for %s: %s", body.URL, shortCode))
+        return c.JSON(fiber.Map{"url": body.URL, "shortCode": shortCode})
     }
 
 }
@@ -38,12 +38,12 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
 func RedirectLink(rdb *redis.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
         // Look up link by code in database
+        val, _ := rdb.Get(context.Background(), fmt.Sprintf("shortcode:%s", c.Params("code"))).Result()
+
         // Update link click count
+
         // Redirect user to original URL
-
-        val, _ := rdb.Get(context.Background(), c.Params("code")).Result()
-
-        return c.SendString(fmt.Sprintf("Redirect Link %s : %s!", c.Params("code"), val))
+        return c.Redirect(val, http.StatusMovedPermanently)
     }
 }
 
