@@ -2,6 +2,8 @@ package utils
 
 import (
 	"testing"
+
+	"github.com/sschneemelcher/snixr/internal/db"
 )
 
 func TestIsValidURL(t *testing.T) {
@@ -64,3 +66,16 @@ func TestHashURL(t *testing.T) {
     }
 }
 
+func BenchmarkGenerateCode(b *testing.B) {
+    url := "https://www.example.org"
+
+    client := db.SetupDB()
+
+    b.ResetTimer()
+    for i := 0; i < b.N; i++ {
+        _, err := GenerateCode(url, client)
+        if err != nil {
+            b.Errorf("Error generating code: %v", err)
+        }
+    }
+}
