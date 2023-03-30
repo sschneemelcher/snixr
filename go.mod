@@ -1,4 +1,4 @@
-module sschneemelcher/snixr
+module github.com/sschneemelcher/snixr
 
 go 1.19
 

@@ -1,8 +1,11 @@
-package handlers
+package api
 
 import (
 	"context"
 	"fmt"
+	"net/http"
+
+    "github.com/sschneemelcher/snixr/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/redis/go-redis/v9"
@@ -10,20 +13,24 @@ import (
 
 func CreateLink(rdb *redis.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-        // Parse request body and create new link
-        // Save link to database
-        // Return new link as JSON response
+        // Parse request body and create new link 
+    	type Body struct {
+		    URL string `json:"url" xml:"url" form:"url"`
+	    }
 
-        // Store the link in Redis
-        err := rdb.Set(context.Background(), "hello", "world", 0).Err()
+	    body := new(Body)
+	    if err := c.BodyParser(body); err != nil {
+		    return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Failed to parse body"})
+	    }
+
+        // Generate short code for CreateLink
+        shortCode, err := utils.GenerateCode(body.URL, rdb)
         if err != nil {
-            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-                "error": "Failed to store link in Redis",
-            })
+		    return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate short url"})
         }
-
-
-        return c.SendString("I'm a POST request at `create new link`!")
+        
+        // Return new link as JSON response
+        return c.SendString(fmt.Sprintf("New short url for %s: %s", body.URL, shortCode))
     }
 
 }
