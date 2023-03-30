@@ -2,16 +2,21 @@ package utils
 
 import (
 	"context"
-	"crypto/sha512"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"regexp"
 
 	"github.com/redis/go-redis/v9"
 )
 
 
 func GenerateCode(url string, rdb *redis.Client) (string, error) {
-    hash := CreateHash(url)
+    if !isValidURL(url) {
+        return "", fmt.Errorf("not a valid URL")
+    }
+
+    hash := createHash(url)
 
     for i := 5; i < len(hash); i++ {
         // Check if start of hash already exists as shortcode in db
@@ -32,9 +37,16 @@ func GenerateCode(url string, rdb *redis.Client) (string, error) {
     return "", fmt.Errorf("error generating code: hash collision for %s and %s", url, val)
 }
 
-func CreateHash(url string) string {
+const urlRegex = `^(https?://)([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*/?$`
+
+func isValidURL(url string) bool {
+    // regular expression for URL validation
+    return regexp.MustCompile(urlRegex).MatchString(url)
+}
+
+func createHash(url string) string {
     // Hash the url using SHA-512 algorithm
-    hasher := sha512.New()
+    hasher := sha256.New()
     hasher.Write([]byte(url))
     hash := hex.EncodeToString(hasher.Sum(nil))
     
