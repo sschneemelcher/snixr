@@ -1,38 +1,35 @@
 # `snixr` 👨‍💻🔗
 
-Welcome to `snixr`, the link shortener service that's quick, easy, and fun to use! 😎
+`snixr` is a fun and easy-to-use link shortening service built with Go, Docker, and Redis. It's perfect for when you need to share long URLs on social media, in emails, or anywhere else.
 
-## About `snixr`
+## 🚀 Getting Started
 
-`snixr` is a fast and lightweight link shortener service built with Go and the Fiber web framework. With `snixr`, you can easily create short links for all of your favorite websites, share them with your friends, and track clicks to see how many people are visiting your links. 🚀
+To get started with `snixr`, simply clone the repository and follow these steps:
 
-## Getting Started
+1. Make sure you have Docker installed on your system.
+1. Run `docker-compose up` in the root directory of the repository.
+1. Access snixr at `http://localhost:3000`.
 
-To get started with `snixr`, simply clone the repository and run the following command:
+That's it! You're now ready to start shortening links with snixr.
 
-```shell
-go run main.go
-```
+## 🌩️ Cloud Native
 
-This will start the `snixr` server and allow you to access the `snixr` API at http://localhost:3000. 🚀
+`snixr` was built with cloud-native principles in mind, which means it's optimized for deployment in a cloud environment. It uses Docker containers to package the application and its dependencies, making it easy to deploy and scale on any cloud platform that supports Docker.
 
-## API Documentation
+## 🎯 Features
 
-`snixr` provides a simple and intuitive API for creating, retrieving, and tracking short links. The API endpoints are:
+Some of the features of snixr include:
 
-- `POST /api/links` - Create a new short link
-- `GET /:code` - Redirect to the original URL for a given short link code
-- `GET /api/links/:id` - Retrieve information about a specific short link
-- `GET /api/links` - Retrieve a list of all short links
+- Fast and efficient link shortening using custom hash-based algorithm.
+- Shortened links that are easy to share and remember.
+- Customizable link expiration times. (coming soon)
+- API endpoints for programmatic link shortening.
 
-## Contributing
+## 📝 Contributing
 
-We welcome contributions to the `snixr` project! To get started, simply fork the repository, make your changes, and submit a pull request. 
+We welcome contributions to `snixr`! To contribute, simply fork the repository, make your changes, and submit a pull request.
 
-## License
+## 📜 License
 
-`snixr` is open source software released under the MIT License. For more information about the `snixr` license, please refer to the LICENSE file. 📜
-
-
-We hope you enjoy using `snixr` as much as we enjoyed building it! Please don't hesitate to reach out if you have any questions or feedback. 😊
+`snixr` is open-source software licensed under the [MIT license](https://github.com/sschneemelcher/snixr/blob/main/LICENSE).
 
