@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>snixr - Link Shortening Service</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			text-align: center;
+		}
+
+		h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		p {
+			font-size: 1.5rem;
+			margin-bottom: 2rem;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			max-width: 400px;
+			margin: 0 auto;
+		}
+
+		input[type="text"] {
+			width: 100%;
+			margin-bottom: 1rem;
+			padding: 0.5rem;
+			border: none;
+			border-radius: 0.25rem;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+			font-size: 1rem;
+			outline: none;
+		}
+
+		input[type="submit"] {
+			background-color: #007bff;
+			color: #fff;
+			padding: 0.5rem;
+			border: none;
+			border-radius: 0.25rem;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+			font-size: 1rem;
+			cursor: pointer;
+			outline: none;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #0069d9;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>snixr</h1>
+		<p>The link shortening service</p>
+		<form>
+			<input type="text" id="url" placeholder="Enter your URL">
+			<input type="submit" value="Shorten" onclick="createShortLink(event)">
+		</form>
+        <div id='output'></div>
+        <script>
+            function createShortLink(event) {
+                event.preventDefault();
+                let url = document.getElementById("url").value;
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:3000/api/shorten", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        let response = JSON.parse(xhr.responseText);
+                        let shortUrl = response.shortUrl;
+                        let output = document.getElementById("output");
+                        output.innerHTML = `<p>Short URL: <a href="${shortUrl}">${shortUrl}</a></p>`;
+                    }
+                };
+                xhr.send(JSON.stringify({ url: url }));
+            }
+        </script>
+	</div>
+</body>
+</html>
+
