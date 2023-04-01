@@ -7,13 +7,15 @@ import (
 
 
 func SetupRoutes(app *fiber.App, rdb *redis.Client) {
-    // Define a route for the root path
+    // Landing page
     app.Get("/", func(c *fiber.Ctx) error {
         return c.SendFile("./public/index.html");
     })
+    // Shorten a link with a random code
     app.Post("/api/shorten", CreateLink(rdb))
+    // Shorten a link with a user defined custom code
+    app.Post("/api/custom", CreateCustomLink(rdb))
+    // Redirect a link
     app.Get("/:code", RedirectLink(rdb))
-    //app.Get("/api/links/:id", GetLink)
-    //app.Get("/api/links", ListLinks)
 }
 
