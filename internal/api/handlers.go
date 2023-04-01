@@ -44,8 +44,6 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
 // Handler for creating custom Links 
 // parses request body and creates new link with custom name
 // if the name is still available
-//
-// path /api/custom
 func CreateCustomLink(rdb *redis.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
         // Parse request body and create new link 
