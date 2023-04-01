@@ -6,9 +6,10 @@
 
 To get started with `snixr`, simply clone the repository and follow these steps:
 
-1. Make sure you have Docker installed on your system.
+1. Make sure you have `docker` and `docker-compose` installed on your system.
+1. Create a `.env` file based on the `.env.example` file in the root directory of the repository.
 1. Run `docker-compose up` in the root directory of the repository.
-1. Access snixr at `http://localhost:3000`.
+1. Access snixr at `http://localhost`.
 
 That's it! You're now ready to start shortening links with snixr.
 
