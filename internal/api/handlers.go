@@ -3,9 +3,11 @@ package api
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
-    "github.com/sschneemelcher/snixr/internal/utils"
+	"github.com/sschneemelcher/snixr/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/redis/go-redis/v9"
@@ -20,21 +22,21 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
 
 	    body := new(Body)
 	    if err := c.BodyParser(body); err != nil {
-            fmt.Printf("createlink error: Failed to parse body: %s\n", err)
+            log.Printf("createlink error: Failed to parse body: %s\n", err)
 		    return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Failed to parse body"})
 	    }
 
         // Generate short code for CreateLink
         shortCode, err := utils.GenerateCode(body.URL, rdb)
         if err != nil {
-            fmt.Printf("createlink error: Failed to generate shortCode: %s\n", err)
+            log.Printf("createlink error: Failed to generate shortCode: %s\n", err)
 		    return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err})
         }
 
-        fmt.Printf("created new link: {shortCode: %s, url: %s}", shortCode, body.URL)
+        log.Printf("created new link: {shortCode: %s, url: %s}", shortCode, body.URL)
         
         // Return new link as JSON response
-        return c.JSON(fiber.Map{"url": body.URL, "shortUrl": fmt.Sprintf("http://localhost:3000/%s", shortCode)})
+        return c.JSON(fiber.Map{"url": body.URL, "shortUrl": fmt.Sprintf("%s%s", os.Getenv("BASE_URL"), shortCode)})
     }
 
 }

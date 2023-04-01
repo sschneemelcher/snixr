@@ -7,12 +7,8 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-
-WORKDIR /app/cmd/snixr
-
-
 # Build the Go app
-RUN go build -o snixr
+RUN go build -o cmd/snixr/snixr
 
 # Expose port 3000 for the application
 EXPOSE 3000
