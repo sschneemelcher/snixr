@@ -31,7 +31,7 @@ func GenerateCode(url string, rdb *redis.Client) (string, error) {
     // ensure that the encoded string only contains alphanumeric characters.
     hash := createCustomHash(url)
 
-    for i := 5; i < len(hash); i++ {
+    for i := 6; i < len(hash); i++ {
         // Check if start of hash already exists as shortcode in db
         val, err := rdb.Get(context.Background(), fmt.Sprintf("shortcode:%s", hash[:i])).Result()
 
