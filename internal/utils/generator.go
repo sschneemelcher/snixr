@@ -12,7 +12,7 @@ import (
 )
 
 // regular expression for URL validation
-const urlRegex = `^(https?://)([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*/?$`
+const urlRegex = `^(https?://)([\da-z.-]+)\.([a-z.]{2,6})([/\w.\?\&=-])*$`
 
 
 func GenerateCode(url string, rdb *redis.Client) (string, error) {
