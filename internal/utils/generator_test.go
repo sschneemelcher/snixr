@@ -68,7 +68,7 @@ func TestHashURL(t *testing.T) {
 
 func BenchmarkGenerateCode(b *testing.B) {
     // Load environment
-    LoadEnv()
+    LoadEnv("../../.env")
 
     url := "https://www.example.org"
 

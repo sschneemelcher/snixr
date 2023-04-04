@@ -18,7 +18,7 @@ import (
 
 func TestCreateLink(t *testing.T) {
     // Load environment variables
-    utils.LoadEnv()
+    utils.LoadEnv("../../.env")
     
     // Create a new Fiber app for the test
     app := fiber.New()
