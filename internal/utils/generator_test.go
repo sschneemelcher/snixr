@@ -67,8 +67,12 @@ func TestHashURL(t *testing.T) {
 }
 
 func BenchmarkGenerateCode(b *testing.B) {
+    // Load environment
+    LoadEnv()
+
     url := "https://www.example.org"
 
+    // Setup DB
     client := db.SetupDB()
 
     b.ResetTimer()

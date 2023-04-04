@@ -11,6 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// regular expression for URL validation
 const urlRegex = `^(https?://)([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*/?$`
 
 
@@ -51,7 +52,11 @@ func GenerateCode(url string, rdb *redis.Client) (string, error) {
 
 
 func isValidURL(url string) bool {
-    // regular expression for URL validation
+    // URL must be less than 250 characters
+    if len(url) > 250 {
+        return false
+    }
+
     return regexp.MustCompile(urlRegex).MatchString(url)
 }
 

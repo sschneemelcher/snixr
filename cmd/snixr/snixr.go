@@ -1,26 +1,18 @@
 package main
 
 import (
-	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/sschneemelcher/snixr/internal/api"
 	"github.com/sschneemelcher/snixr/internal/db"
+	"github.com/sschneemelcher/snixr/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-func loadEnv() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-}
-
 func main() {
-    loadEnv()
+    utils.LoadEnv()
 
     // Create a new Fiber instance
     app := fiber.New()

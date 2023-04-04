@@ -34,9 +34,9 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
         }
 
         log.Printf("created new link: {shortCode: %s, url: %s}", shortCode, body.URL)
-        
+
         // Return new link as JSON response
-        return c.JSON(fiber.Map{"url": body.URL, "shortUrl": fmt.Sprintf("%s%s", os.Getenv("BASE_URL"), shortCode)})
+        return c.Status(http.StatusCreated).JSON(fiber.Map{"url": body.URL, "shortUrl": fmt.Sprintf("%s%s", os.Getenv("BASE_URL"), shortCode)})
     }
 
 }
