@@ -59,9 +59,9 @@ func CreateCustomLink(rdb *redis.Client) fiber.Handler {
 	    }
 
         // Check if custom name is available 
-        _, err := rdb.Get(context.Background(), fmt.Sprintf("shortcode:%s", body.CUSTOM_NAME)).Result()
+        _, err := rdb.HGet(context.Background(), "shortcode:" + body.CUSTOM_NAME, "url").Result()
         if err != nil {
-            err := rdb.Set(context.Background(), fmt.Sprintf("shortcode:%s", body.CUSTOM_NAME), body.URL, 0).Err()
+            err := rdb.HSet(context.Background(), "shortcode:" + body.CUSTOM_NAME, "url", body.URL, "clicks", 0).Err()
             if err != nil {
 		        return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "error setting custom url"})
             }
@@ -78,16 +78,21 @@ func CreateCustomLink(rdb *redis.Client) fiber.Handler {
 func RedirectLink(rdb *redis.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
         // Look up link by code in database
-        val, err := rdb.Get(context.Background(), fmt.Sprintf("shortcode:%s", c.Params("code"))).Result()
+        val, err := rdb.HGet(context.Background(), "shortcode:" + c.Params("code"), "url").Result()
 
         if err != nil {
             return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Link not found"})
         }
 
         // Update link click count
-        // TODO
+        err = rdb.HIncrBy(context.Background(), "shortcode:" + c.Params("code"), "clicks", 1).Err()
+        if err != nil {
+            log.Printf("Failed to update click count: %s", err)
+        }
+
+        log.Printf("redirection: {shortcode: %s, url %s", c.Params("code"), val)
 
         // Redirect user to original URL
-        return c.Redirect(val, http.StatusMovedPermanently)
+        return c.Redirect(val, http.StatusTemporaryRedirect)
     }
 }

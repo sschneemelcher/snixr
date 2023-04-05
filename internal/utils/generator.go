@@ -14,7 +14,9 @@ import (
 // regular expression for URL validation
 const urlRegex = `^(https?://)([\da-z.-]+)\.([a-z.]{2,6})([/\w.\?\&=-])*$`
 
-
+// GenerateCode generates a shortcode for the given URL. If the URL already has a
+// shortcode, the existing shortcode is returned. Otherwise, a new shortcode is
+// generated and stored in the database.
 func GenerateCode(url string, rdb *redis.Client) (string, error) {
     if !isValidURL(url) {
         return "", fmt.Errorf("not a valid URL")
@@ -33,10 +35,10 @@ func GenerateCode(url string, rdb *redis.Client) (string, error) {
 
     for i := 6; i < len(hash); i++ {
         // Check if start of hash already exists as shortcode in db
-        val, err := rdb.Get(context.Background(), fmt.Sprintf("shortcode:%s", hash[:i])).Result()
+        val, err := rdb.HGet(context.Background(), fmt.Sprintf("shortcode:%s", hash[:i]), "url").Result()
 
         if err != nil {
-            err := rdb.Set(context.Background(), fmt.Sprintf("shortcode:%s", hash[:i]), url, 0).Err()
+            err := rdb.HSet(context.Background(), fmt.Sprintf("shortcode:%s", hash[:i]), "url", url, "clicks", 0).Err()
             if err != nil {
                 return "", fmt.Errorf("error generating code: %s", err)
             }
@@ -46,11 +48,11 @@ func GenerateCode(url string, rdb *redis.Client) (string, error) {
         }
     }
     
-    val, _ := rdb.Get(context.Background(), hash).Result()
+    val, _ := rdb.HGet(context.Background(), hash, "url").Result()
     return "", fmt.Errorf("error generating code: hash collision for %s and %s", url, val)
 }
 
-
+// Check if the given URL is valid.
 func isValidURL(url string) bool {
     // URL must be less than 250 characters
     if len(url) > 250 {
@@ -60,7 +62,8 @@ func isValidURL(url string) bool {
     return regexp.MustCompile(urlRegex).MatchString(url)
 }
 
-
+// Hash the URL using the SHA-256 algorithm and return the hash as a string
+// of hexadecimal digits.
 func createHash(url string) string {
     hasher := sha256.New()
     hasher.Write([]byte(url))
@@ -69,6 +72,8 @@ func createHash(url string) string {
     return hash
 }
 
+// Hash the URL using the SHA-256 algorithm and return the hash as a string
+// of alphanumeric characters encoded using a custom encoding scheme.
 func createCustomHash(url string) string {
     hasher := sha256.New()
     hasher.Write([]byte(url))
