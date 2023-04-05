@@ -11,6 +11,9 @@ func SetupRoutes(app *fiber.App, rdb *redis.Client) {
     app.Get("/", func(c *fiber.Ctx) error {
         return c.SendFile("./public/index.html");
     })
+    app.Get("/assets/logo.png", func(c *fiber.Ctx) error {
+        return c.SendFile("./public/img/logo.png");
+    })
     // Shorten a link with a random code
     app.Post("/api/shorten", CreateLink(rdb))
     // Shorten a link with a user defined custom code
