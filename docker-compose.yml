@@ -3,6 +3,6 @@ services:
   snixr:
     build: .
     ports:
-      - "80:80"
+      - "433:433"
   redis:
     image: "redis:alpine"
