@@ -18,6 +18,8 @@ func SetupRoutes(app *fiber.App, rdb *redis.Client) {
 	app.Post("/api/shorten", CreateLink(rdb))
 	// Shorten a link with a user defined custom code
 	app.Post("/api/custom", CreateCustomLink(rdb))
+	// Get click count for a link
+	app.Get("/:code/clicks", GetClicks(rdb))
 	// Redirect a link
 	app.Get("/:code", RedirectLink(rdb))
 }

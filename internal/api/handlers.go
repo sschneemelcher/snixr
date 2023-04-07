@@ -43,6 +43,23 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
 
 }
 
+// Handler for getting Link information
+// looks up link by code and returns shortcoe, url and click count
+func GetClicks(rdb *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// Look up link by code in database
+		res, err := rdb.HGetAll(context.Background(), "shortcode:"+c.Params("code")).Result()
+		if err != nil {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Link not found"})
+		}
+
+		log.Printf("clicks: {shortcode: %s, url: %s, clicks: %s}", c.Params("code"), res["url"], res["clicks"])
+
+		// Return clicks as JSON response
+		return c.JSON(fiber.Map{"shortcode": c.Params("code"), "url": res["url"], "clicks": res["clicks"]})
+	}
+}
+
 // Handler for creating custom Links
 // parses request body and creates new link with custom name
 // if the name is still available
