@@ -49,7 +49,7 @@ func GetClicks(rdb *redis.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		// Look up link by code in database
 		res, err := rdb.HGetAll(context.Background(), "shortcode:"+c.Params("code")).Result()
-		if err != nil {
+		if err != nil || len(res) == 0 {
 			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Link not found"})
 		}
 
