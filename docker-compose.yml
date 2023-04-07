@@ -3,9 +3,12 @@ services:
   snixr:
     build: .
     ports:
-      - "433:433"
-    volumes:
-      - /etc/letsencrypt/live/snixr.cc/fullchain.pem:/app/certs/cert.pem
-      - /etc/letsencrypt/live/snixr.cc/privkey.pem:/app/certs/key.pem
+      - "3000:3000"
   redis:
     image: "redis:alpine"
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:
+    driver: local
+
