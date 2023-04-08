@@ -29,16 +29,16 @@ func CreateLink(rdb *redis.Client) fiber.Handler {
 		}
 
 		// Generate short code for CreateLink
-		shortCode, err := utils.GenerateCode(body.URL, rdb)
+		res, err := utils.GenerateCode(body.URL, rdb)
 		if err != nil {
-			log.Printf("createlink error: Failed to generate shortCode: %s\n", err)
+			log.Print(err)
 			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err})
 		}
 
-		log.Printf("created new link: {shortCode: %s, url: %s}", shortCode, body.URL)
+		log.Printf("created new link: {shortCode: %s, url: %s}", res.ShortCode, body.URL)
 
 		// Return new link as JSON response
-		return c.Status(http.StatusCreated).JSON(fiber.Map{"url": body.URL, "shortUrl": fmt.Sprintf("%s%s", os.Getenv("BASE_URL"), shortCode)})
+		return c.Status(http.StatusCreated).JSON(fiber.Map{"url": body.URL, "shortCode": res.ShortCode})
 	}
 
 }
