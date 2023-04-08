@@ -3,6 +3,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -51,7 +52,7 @@ func TestCreateLink(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.NotEmpty(t, result["shortUrl"])
+	assert.NotEmpty(t, result["shortCode"])
 }
 
 func TestGetClicks(t *testing.T) {
@@ -63,6 +64,8 @@ func TestGetClicks(t *testing.T) {
 
 	// Setup redis client
 	rdb := db.SetupDB()
+	rdb.HSetNX(context.Background(), "shortcode:123", "url", "https://example.org")
+	rdb.HSetNX(context.Background(), "shortcode:123", "clicks", 0)
 
 	// Set up the neccessary handlers
 	app.Get("/:code/clicks", GetClicks(rdb))
@@ -83,10 +86,10 @@ func TestGetClicks(t *testing.T) {
 	assert.Equal(t, "application/json", resp.Header.Get("Content-Type"))
 
 	// Check the response body
-	var result map[string]int
+	var result map[string]string
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, 0, result["clicks"])
+	assert.Equal(t, "0", result["clicks"])
 }
